@@ -9,7 +9,7 @@ User=root
 Type=simple
 WorkingDirectory=/opt/TG_Count
 RestartSec=3
-ExecStart=python3 tgcount.py
+ExecStart=python3 tgcount.py -c tgcount.ini
 Restart=on-failure
 Environment=PYTHONUNBUFFERED=1
 
