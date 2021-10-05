@@ -15,6 +15,9 @@ __email__      = 'christianyuvel@dmr-peru.pe'
 __license__    = 'GNU GPLv3'
 __version__    = '1.5.0 Beta'
 
+# Configuration variables and constants
+from config import *
+
 # Close gently
 def signal_handler(signal, frame):
     print('\nBye')
