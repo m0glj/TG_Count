@@ -7,22 +7,29 @@ import sys, signal
 from csv import reader
 from requests import get
 
+
 __author__     = 'Christian Quiroz - OA4DOA'
 __copyright__  = 'Copyright (c) Christian Quiroz, OA4DOA 2021'
 __credits__    = 'Norman Williams, M6NBP'
 __maintainer__ = 'Christian OA4DOA'
 __email__      = 'christianyuvel@dmr-peru.pe'
 __license__    = 'GNU GPLv3'
-__version__    = '1.5.0 Beta'
+__version__    = '1.6.0 Beta'
 
-# Configuration variables and constants
-from config import *
+
+try: 
+    from config import *
+except:
+    print('config.py file is missing.')
+    quit()
+
 
 # Close gently
 def signal_handler(signal, frame):
     print('\nBye')
     sys.exit(0)
 signal.signal(signal.SIGINT, signal_handler)
+
 
 # Show time in a friendly format
 def min_sec(f):
@@ -33,6 +40,7 @@ def min_sec(f):
     else:
         second = seco
     return f'{minu}:{second}'
+
 
 # Download or update the source files
 def file_update(url,update):
@@ -63,6 +71,7 @@ def file_update(url,update):
         except Exception as err:
             print(f"{err}\nWe can't continue.")
             quit()
+
 
 # Resolve DMR ID
 def resolve_cs(dmr_id):
@@ -156,9 +165,10 @@ while True:
                     tg_count[tg_number]['qso_count'] += qso_time
 
                 if call_id not in tg_count[tg_number]['call_sign']:
-                    tg_count[tg_number]['call_sign'][call_id] = 1
+                    tg_count[tg_number]['call_sign'][call_id] = qso_time
                 else:
-                    tg_count[tg_number]['call_sign'][call_id] += 1
+                    tg_count[tg_number]['call_sign'][call_id] += qso_time
+
             last_line = log.tell()
         del log
 
