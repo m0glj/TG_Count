@@ -149,22 +149,20 @@ while True:
                     if '*CALL END*' not in line: continue
                     line_split = line.rstrip().split()
                     if line_split[1] != today: continue
-                    if line_split[11][1:-1] in VANISH: continue
-                    try:
-                        if line_split[-3] == 'Packet':
-                            tg_number = int(line_split[-12][1:-2])
-                            qso_time = float(line_split[-1][:-2])
-                        else:
-                            tg_number = int(line_split[-5][1:-2])
-                            qso_time = float(line_split[-1])
-                    except Exception as err:
-                        print(f'Unrecognized log format, skipping this line:\n {err}')
+                    if int(line_split[line_split.index("SUB:") + 2][1:-1]) in VANISH:
                         continue
-                    if qso_time < 6 : continue
+                    try:
+                        qso_time = float(line_split[line_split.index("Duration:") + 1][:-1])
+                        if qso_time < 6:
+                            continue
+                        tg_number = int(line_split[line_split.index("TS") - 1][1:-2])
+                        call_id = line_split[line_split.index("SUB:") + 1]
+                        if call_id.isdigit():
+                            call_id = int(call_id)
 
-                    call_id = line_split[10]
-                    if call_id.isdigit():
-                        call_id = int(line_split[10])
+                    except Exception as err:
+                        print(f'Unrecognized log format:\n{err}\n{line}')
+                        continue
 
                 if tg_number not in tg_count :
                     tg_count[tg_number] = {'count':1, 'qso_count':qso_time, 'call_sign':{}}
@@ -212,17 +210,17 @@ while True:
         for key,value in tg_count[tg_name]['call_sign'].items():
             temp_.append((value,resolve_cs(key)))
 
-        sorted(temp_,reverse=True)
+        tmp_sorted = sorted(temp_,reverse=True)
         tg_count[tg_name]['call_sort'] = []
-        for value,key in temp_[:4]:
+        for value,key in tmp_sorted[:4]:
             tg_count[tg_name]['call_sort'].append(key)
 
 
     # Sort the dictionary for the top TG
-    count_lst =sorted([(value['qso_count'],key) for key,value in tg_count.items()],reverse=True)
+    count_lst = sorted([(value['qso_count'],key) for key,value in tg_count.items()],reverse=True)
 
     #Make a list of the 20 first TG
-    final_tg =[key  for value,key in count_lst[:20]]
+    final_tg =[key for value,key in count_lst[:20]]
 
 
     # Resolve TG name
